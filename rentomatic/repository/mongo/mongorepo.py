@@ -35,7 +35,7 @@ class MongoRepo:
         else:
             mongo_filter = {}
             for key, value in filters.items():
-                key, operator = key.split("___")
+                key, operator = key.split("__")
 
                 filter_value = mongo_filter.get(key, {})
 

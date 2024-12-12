@@ -7,7 +7,7 @@ def mg_database_empty(app_configuration):
         host = app_configuration["MONGODB_HOSTNAME"],
         port = int(app_configuration["MONGODB_PORT"]),
         username = app_configuration["MONGODB_USER"],
-        passaword = app_configuration["MONGODB_PASSWORD"],
+        password = app_configuration["MONGODB_PASSWORD"],
         authSource = "admin"
     )
 

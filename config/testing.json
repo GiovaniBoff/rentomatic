@@ -28,10 +28,6 @@
         "value": "postgres"
     },
     {
-        "name": "APPLICATION_DB",
-        "value": "test"
-    },
-    {
         "name": "MONGODB_USER",
         "value": "root"
     },
