@@ -1,5 +1,6 @@
 Flask
 SQLAlchemy
-psycopg2-binary
 # psycopg2
 pymongo
+gunicorn
+alembic
