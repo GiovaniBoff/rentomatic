@@ -1,4 +1,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/GiovaniBoff/rentomatic/badge.svg)](https://coveralls.io/github/GiovaniBoff/rentomatic)
+![Integration tests](https://github.com/GiovaniBoff/rentomatic/actions/workflows/python-app.yml/badge.svg)
 # Rentomatic
 
 A demo implementation of a clean architecture in Python.
