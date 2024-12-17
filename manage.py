@@ -120,6 +120,7 @@ def test(args):
         "--cov=application",
         "--cov-report=term-missing",
         "--cov-report=xml",
+        "--cov-report=lcov"
     ]
     cmdline.extend(args)
     subprocess.call(cmdline)
