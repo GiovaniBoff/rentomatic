@@ -47,5 +47,10 @@ jobs:
     - name: Test
       run: |
         python manage.py test -- --integration
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.xml
 
             
