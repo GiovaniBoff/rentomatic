@@ -41,7 +41,23 @@ Running the database:
  python manage.py init-postgres
 
 ```
+Runnig the migrations:
+```
+ python manage.py run-migrations
+
+```
+
+Creating migrations:
+
+```
+ python manage.py create-migration "name_of_migration"
+```
+
 Running the application:
+
+````
+ python manage.py compose up -d
+```
 
 ## ⚙️ Running the tests
 

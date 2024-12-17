@@ -8,20 +8,26 @@ import click
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+
 # Ensure an environment variable exists and has a value
 def setenv(variable, default):
     os.environ[variable] = os.getenv(variable, default)
 
+
 setenv("APPLICATION_CONFIG", "production")
+
 
 APPLICATION_CONFIG_PATH = "config"
 DOCKER_PATH = "docker"
 
+
 def app_config_file(config):
     return os.path.join(APPLICATION_CONFIG_PATH, f"{config}.json")
 
+
 def docker_compose_file(config):
     return os.path.join(DOCKER_PATH, f"{config}.yml")
+
 
 def read_json_configuration(config):
     # Read configuration from the relative JSON file
@@ -33,15 +39,18 @@ def read_json_configuration(config):
 
     return config_data
 
+
 def configure_app(config):
-    configuration =  read_json_configuration(config)
+    configuration = read_json_configuration(config)
 
     for key,value in configuration.items():
         setenv(key,value)
 
+
 @click.group()
 def cli():
     pass
+
 
 def docker_compose_cmdline(commands_string=None):
     config = os.getenv("APPLICATION_CONFIG")
@@ -65,6 +74,7 @@ def docker_compose_cmdline(commands_string=None):
 
     return command_line
 
+
 def run_sql(statements):
     conn = psycopg2.connect(
         dbname=os.getenv("POSTGRES_DB"),
@@ -82,11 +92,13 @@ def run_sql(statements):
     cursor.close()
     conn.close()
 
+
 def wait_for_logs(cmdline, message):
     logs = subprocess.check_output(cmdline)
     while message not in logs.decode("utf-8"):
         time.sleep(1)
         logs = subprocess.check_output(cmdline)
+
 
 @cli.command()
 @click.argument("args", nargs=-1)
@@ -114,6 +126,7 @@ def test(args):
     cmdline = docker_compose_cmdline("down")
     subprocess.call(cmdline)
 
+
 @cli.command(context_settings={"ignore_unknown_options": True})
 @click.argument("subcommand", nargs=-1, type=click.Path())
 def compose(subcommand):
@@ -127,8 +140,8 @@ def compose(subcommand):
         p.send_signal(signal.SIGINT)
         p.wait()
 
-@cli.command()
 
+@cli.command()
 def init_postgres():
     configure_app(os.getenv("APPLICATION_CONFIG"))
 
@@ -141,6 +154,8 @@ def init_postgres():
                 "exists and will not be recreated",
             )
         )
+
+
 @cli.command()
 @click.argument("message", nargs=-1)
 def create_migration(message):
@@ -151,13 +166,14 @@ def create_migration(message):
     :return: None
     """
     env_vars = {
-        "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "postgres",
-        "POSTGRES_HOSTNAME": "localhost",
-        "APPLICATION_DB": "application",
+        "POSTGRES_USER": f'{os.getenv("POSTGRES_USER", "postgres")}',
+        "POSTGRES_PASSWORD": f'{os.getenv("POSTGRES_PASSWORD", "postgres")}',
+        "POSTGRES_HOSTNAME": f'{os.getenv("POSTGRES_HOSTNAME", "localhost")}',
+        "APPLICATION_DB": f'{os.getenv("APPLICATION_DB","application")}'
     }
     for key, value in env_vars.items():
         os.environ[key] = value
+
     cmdline = [
         "alembic",
         "revision",
@@ -166,6 +182,26 @@ def create_migration(message):
         " ".join(message or ["Initial"]),
     ]
     subprocess.call(cmdline)
+
+
+@cli.command()
+def run_migrations():
+
+    env_vars = {
+        "POSTGRES_USER": f'{os.getenv("POSTGRES_USER", "postgres")}',
+        "POSTGRES_PASSWORD": f'{os.getenv("POSTGRES_PASSWORD", "postgres")}',
+        "POSTGRES_HOSTNAME": f'{os.getenv("POSTGRES_HOSTNAME", "localhost")}',
+        "APPLICATION_DB": f'{os.getenv("APPLICATION_DB","application")}'
+    }
+    for key, value in env_vars.items():
+        os.environ[key] = value
+    cmdline = [
+        "alembic",
+        "upgrade",
+        "head",
+    ]
+    subprocess.call(cmdline)
+
 
 if __name__ == "__main__":
     cli()
