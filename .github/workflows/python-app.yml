@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Coverage Badge
+      uses: we-cli/coverage-badge-action@v1.0.1
     - name: Install Docker using Docker's official script
       run: |
         curl -fsSL https://get.docker.com -o get-docker.sh
@@ -47,3 +49,5 @@ jobs:
     - name: Test
       run: |
         python manage.py test -- --integration
+
+            
