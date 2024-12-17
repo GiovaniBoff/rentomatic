@@ -6,3 +6,4 @@ pytest-cov
 pytest-flask
 flake8
 docker-compose==1.23.0
+wheel
