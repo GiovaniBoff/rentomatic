@@ -4,4 +4,4 @@ tox
 coverage
 pytest-cov
 pytest-flask
-docker-compose
+# docker-compose
