@@ -1,6 +1,6 @@
 Flask
 SQLAlchemy
-# psycopg2
+psycopg2
 pymongo
 gunicorn
 alembic
