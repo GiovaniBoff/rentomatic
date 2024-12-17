@@ -52,10 +52,9 @@ Creating migrations:
 ```
  python manage.py create-migration "name_of_migration"
 ```
-
 Running the application:
 
-````
+```
  python manage.py compose up -d
 ```
 
