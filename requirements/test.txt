@@ -5,4 +5,4 @@ coverage
 pytest-cov
 pytest-flask
 flake8
-# docker-compose
+docker-compose=1.23.0
