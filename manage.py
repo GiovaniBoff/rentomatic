@@ -119,6 +119,7 @@ def test(args):
         "-svv",
         "--cov=application",
         "--cov-report=term-missing",
+        "--cov-report=xml",
     ]
     cmdline.extend(args)
     subprocess.call(cmdline)
