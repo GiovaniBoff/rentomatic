@@ -118,9 +118,11 @@ def test(args):
         "pytest",
         "-svv",
         "--cov=application",
+        "--cov=rentomatic",
         "--cov-report=term-missing",
         "--cov-report=xml",
-        "--cov-report=lcov"
+        "--cov-report=lcov",
+        "--cov-report=html",
     ]
     cmdline.extend(args)
     subprocess.call(cmdline)
