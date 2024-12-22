@@ -1,6 +1,7 @@
 import dataclasses
 import uuid
 
+
 @dataclasses.dataclass
 class Room:
     code: uuid.UUID
@@ -8,10 +9,10 @@ class Room:
     price: int
     longitude: float
     latitude: float
-    
+
     @classmethod
     def from_dict(cls,d):
         return cls(**d)
-    
+
     def to_dict(self):
         return dataclasses.asdict(self)
