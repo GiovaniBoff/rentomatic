@@ -4,13 +4,14 @@ import json
 import os
 from flask import Blueprint, Response, request
 
-from rentomatic.repository.memrepo import MemRepo
+from application.rest.dto.room_dto_objects import RoomDTO, create_room_domain_object
+
 from rentomatic.repository.postgres.postgresrepo import PostgresRepo
 from rentomatic.requests.room_list import build_room_list_request
 from rentomatic.responses import ResponseTypes
 from rentomatic.serializers.room import RoomJsonEncoder
+from rentomatic.use_cases.room_create import room_create_use_case
 from rentomatic.use_cases.room_list import room_list_use_case
-
 
 blueprint = Blueprint("room", __name__)
 
@@ -60,6 +61,7 @@ postgres_configuration = {
     "APPLICATION_DB": os.environ["APPLICATION_DB"],
 }
 
+
 @blueprint.route("/rooms", methods=["GET"])
 def room_list():
 
@@ -79,6 +81,24 @@ def room_list():
     repo = PostgresRepo(postgres_configuration)
 
     response = room_list_use_case(repo, request_object)
+
+    return Response(
+        json.dumps(response.value, cls=RoomJsonEncoder),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type]
+    )
+
+
+@blueprint.route("/rooms", methods=["POST"])
+def room_create():
+    request_object = request.get_json()
+
+    repo = PostgresRepo(postgres_configuration)
+
+    room_dto = RoomDTO(**request_object)
+    room = create_room_domain_object(room_dto)
+
+    response = room_create_use_case(repo, room)
 
     return Response(
         json.dumps(response.value, cls=RoomJsonEncoder),

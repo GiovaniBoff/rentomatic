@@ -1,3 +1,4 @@
+import code
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -18,8 +19,8 @@ class PostgresRepo:
         self.engine = create_engine(connection_string)
         Base.metadata.create_all(self.engine)
         Base.metadata.bind = self.engine
-        
-        
+
+
     def _create_room_objects(self, results):
         return [
             room.Room(
@@ -31,13 +32,31 @@ class PostgresRepo:
             )
             for q in results
         ]
-        
+
+    def _create_room_object(self, result):
+        return room.Room(
+            code=result.code,
+            size=result.size,
+            price=result.price,
+            latitude=result.latitude,
+            longitude=result.longitude,
+        )
+
+    def _create_room_sql_object(self, room):
+        return Room(
+            code=str(room.code),
+            size=room.size,
+            price=room.price,
+            latitude=room.latitude,
+            longitude=room.longitude
+        )
+
     def list(self, filters=None):
         DBSession = sessionmaker(bind=self.engine)
         session = DBSession()
-        
+
         query = session.query(Room)
-        
+
         if filters is None:
             return self._create_room_objects(query.all())
 
@@ -54,3 +73,12 @@ class PostgresRepo:
             query = query.filter(Room.price > filters["price__gt"])
 
         return self._create_room_objects(query.all())
+
+    def create(self, room):
+        DBSession = sessionmaker(bind=self.engine)
+        session = DBSession()
+
+        session.add(self._create_room_sql_object(room))
+        session.commit()
+
+        return self._create_room_object(room)

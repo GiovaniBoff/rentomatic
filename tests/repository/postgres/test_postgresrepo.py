@@ -1,4 +1,6 @@
+import uuid
 import pytest
+from rentomatic.domain.room import Room
 from rentomatic.repository.postgres import postgresrepo
 
 pytestmark = pytest.mark.integration
@@ -63,3 +65,20 @@ def test_repository_list_with_price_equal_filter(
 
     assert len(repo_rooms) == 1
     assert repo_rooms[0].code == "913694c6-435a-4366-ba0d-da5334a611b2"
+
+
+def test_repository_create(app_configuration, pg_session, pg_test_data):
+    repo = postgresrepo.PostgresRepo(app_configuration)
+
+    room = Room(
+        code=uuid.uuid4(),
+        size=405,
+        price=66,
+        longitude=0.18228006,
+        latitude=51.74640997,
+    )
+
+    repo_room = repo.create(room)
+
+    assert room == repo_room
+    assert len(pg_session.query(postgresrepo.Room).all()) == 5
